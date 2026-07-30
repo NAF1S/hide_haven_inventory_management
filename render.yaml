@@ -1,0 +1,28 @@
+# Render Blueprint — auto-deploys on git push
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: wc-lite-sync
+    runtime: python
+    plan: free
+    region: oregon
+
+    # ── Build: install Python deps, then build the React frontend ──
+    buildCommand: |
+      pip install -r requirements.txt
+      cd frontend && npm install && npm run build && cd ..
+
+    # ── Start: launch uvicorn on Render's dynamic $PORT ──
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+
+    # ── Health check: FastAPI returns {"status":"ok"} at this path ──
+    healthCheckPath: /health
+
+    # ── Environment variables ──
+    envVars:
+      - key: SHARED_SECRET
+        sync: false           # set manually in Render dashboard (secret!)
+        value: change-me-to-a-random-string
+      - key: DATABASE_URL
+        value: sqlite:///data.db
