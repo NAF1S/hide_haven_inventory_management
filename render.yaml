@@ -22,7 +22,6 @@ services:
     # ── Environment variables ──
     envVars:
       - key: SHARED_SECRET
-        sync: false           # set manually in Render dashboard (secret!)
-        value: change-me-to-a-random-string
+        sync: false           # managed in Render dashboard (don't commit secrets!)
       - key: DATABASE_URL
         value: sqlite:///data.db
